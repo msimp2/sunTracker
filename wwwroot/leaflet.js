@@ -26,6 +26,9 @@
         if (typeof updateMorningTime === 'function') {
             updateMorningTime();
         }
+        if (typeof updateEveningTime === 'function') {
+            updateEveningTime();
+        }
     });
 
     return map;
