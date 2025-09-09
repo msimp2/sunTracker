@@ -1,0 +1,6 @@
+@sunTracker_HostAddress = http://localhost:5038
+
+GET {{sunTracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
