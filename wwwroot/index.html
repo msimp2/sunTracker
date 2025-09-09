@@ -7,11 +7,61 @@
 </head>
 <body>
 
-    <div id="controls"</div>
-    <div id="map"></div>
+    <!-- Title and Clocks Row -->
+    <div style="display: flex; align-items: center; justify-content: center; margin-top: 24px; margin-bottom: 24px; position: relative;">
+        <!-- Clocks: Local and UTC, absolutely positioned left -->
+        <div style="position: absolute; left: 0; font-size: 1.1em; margin-left: 24px; white-space: nowrap;">
+            <span id="local-clock"></span>
+            &nbsp;|&nbsp;
+            <span id="utc-clock"></span>
+        </div>
+        <h1 style="margin: 0; text-align: center;">
+            Sun Tracker Viewer
+        </h1>
+    </div>
+
+    <div class="container">
+        <!-- Flex row: map and sidebar -->
+        <div style="display: flex; flex-direction: row;">
+            <div id="map" style="height: 600px; width: 100%;"></div>
+        </div>
+
+
+        <!-- Time Selector underneath the map -->
+        <div id="date-selector" style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px; align-items: flex-start;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <label for="datePicker">Date:</label> <input type="date" id="datePicker" style="width: 140px;" />
+            </div>
+        </div>
+
+        <!-- Latitude/Longitude input boxes directly below the map -->
+        <div style="margin-top: 16px;">
+            <label for="latitude">Latitude:</label>
+            <input type="text" id="latitude">
+            <label for="longitude" style="margin-left: 12px;">Longitude:</label>
+            <input type="text" id="longitude">
+        </div>
+
+        <!-- Elevation Angle of Inquiry -->
+        <div style="margin-top: 30px;">
+            <label for="elevationAngle">Elevation Angle Above Horizon:</label>
+            <input type="text" id="elevationAngle">
+        </div>
+
+        <!-- Morning and Evening Time Outputs -->
+        <div style="margin-top: 30px;">
+            <label for="morning">Morning Time:</label>
+            <input type="text" id="morning">
+            <label for="evening" style="margin-left: 12px;">Evening Time:</label>
+            <input type="text" id="evening">
+        </div>
+
+    </div>
 
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="leaflet.js"></script>
+    <script src="sunTracker.js"></script>
+
 </body>
 </html>
