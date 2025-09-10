@@ -1,4 +1,9 @@
-﻿function initializeMap() {
+﻿import { showGrid, hideGrid } from './Overlay/latlon.js';
+import { setupBasemapSelector } from './Overlay/basemap.js';
+import { addStatesLayer, removeStatesLayer, updateStatesLayerColor } from './Overlay/states.js';
+import { addCountiesLayer, removeCountiesLayer, updateCountiesLayerColor, updateCountiesNamesVisibility } from './Overlay/counties.js';
+
+function initializeMap() {
     // Add map styles dynamically
     const style = document.createElement('style');
     style.textContent = `
@@ -10,11 +15,9 @@
     document.head.appendChild(style);
 
     // Initialize the Leaflet map
-    window.map = L.map('map').setView([39.5, -98.35], 4);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    var map = L.map('map').setView([39.5, -98.35], 4);
+    setupBasemapSelector(map);
+    window.map = map;
 
     // Listen for map clicks and update input boxes
     map.on('click', function (e) {
@@ -61,12 +64,89 @@ function updateClocks() {
     }
 }
 
+
 // Start the clocks when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     updateClocks();
     setInterval(updateClocks, 1000);
+
+    initializeMap();
+
+
+    // Lat lon
+    let gridVisible = false;
+    let gridColor = '#888888';
+
+    const basemapSelector = document.getElementById('basemap-selector');
+    const latlonGridColorInput = document.getElementById('gridColorInput');
+    const latlonGridToggleCheckbox = document.getElementById('toggleGridCheckbox');
+
+    // Checkbox toggles lat/lon grid visibility
+    latlonGridToggleCheckbox.addEventListener('change', function () {
+        gridVisible = this.checked;
+        if (gridVisible) {
+            showGrid(map, gridColor);
+        } else {
+            hideGrid(map);
+        }
+    });
+
+    // Update grid color and show grid if visible when color input changes
+    latlonGridColorInput.addEventListener('input', () => {
+        gridColor = latlonGridColorInput.value;
+        if (gridVisible) {
+            showGrid(map, gridColor);
+        }
+    });
+
+    // Show lat/lon grid when map moves, if visible
+    map.on('moveend', function () {
+        if (gridVisible) {
+            showGrid(map, gridColor);
+        }
+    });
+
+    // States
+    const statesCheckbox = document.getElementById('states-checkbox');
+    const statesColorInput = document.getElementById('statesColorInput');
+
+    statesCheckbox.addEventListener('change', function () {
+        if (statesCheckbox.checked) {
+            addStatesLayer(map, statesColorInput.value);
+        } else {
+            removeStatesLayer(map);
+        }
+    });
+
+    statesColorInput.addEventListener('input', function () {
+        if (statesCheckbox.checked) {
+            updateStatesLayerColor(map, statesColorInput.value);
+        }
+    });
+
+    // Counties
+    const countiesCheckbox = document.getElementById('counties-checkbox');
+    const countiesColorInput = document.getElementById('countiesColorInput');
+    const countiesNamesCheckbox = document.getElementById('counties-names-checkbox');
+
+    countiesCheckbox.addEventListener('change', function () {
+        if (countiesCheckbox.checked) {
+            addCountiesLayer(map, countiesColorInput.value, countiesNamesCheckbox.checked);
+        } else {
+            removeCountiesLayer(map);
+        }
+    });
+
+    countiesColorInput.addEventListener('input', function () {
+        if (countiesCheckbox.checked) {
+            updateCountiesLayerColor(map, countiesColorInput.value);
+        }
+    });
+
+    countiesNamesCheckbox.addEventListener('change', function () {
+        if (countiesCheckbox.checked) {
+            updateCountiesNamesVisibility(map, countiesNamesCheckbox.checked);
+        }
+    });
+
 });
-
-// --- END CLOCKS ---
-
-document.addEventListener('DOMContentLoaded', initializeMap);
